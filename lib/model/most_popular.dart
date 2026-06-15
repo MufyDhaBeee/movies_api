@@ -1,24 +1,33 @@
+import 'dart:convert';
 
-class MostPopularModel {
+List<MostPopularMovieList> mostPopularMovieListFromJson(String str) =>
+    List<MostPopularMovieList>.from(
+      (json.decode(str) as List).map((x) => MostPopularMovieList.fromJson(x)),
+    );
+
+String mostPopularMovieListToJson(List<MostPopularMovieList> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class MostPopularMovieList {
   String? id;
   String? url;
   String? primaryTitle;
   String? originalTitle;
-  String? type;
+  Type? type;
   String? description;
   String? primaryImage;
-  List<Thumbnails>? thumbnails;
-  dynamic trailer;
-  String? contentRating;
+  List<Thumbnail>? thumbnails;
+  String? trailer;
+  ContentRating? contentRating;
   int? startYear;
   dynamic endYear;
-  String? releaseDate;
+  DateTime? releaseDate;
   List<String>? interests;
-  List<dynamic>? countriesOfOrigin;
-  List<dynamic>? externalLinks;
+  List<String>? countriesOfOrigin;
+  List<String>? externalLinks;
   List<String>? spokenLanguages;
   List<String>? filmingLocations;
-  List<ProductionCompanies>? productionCompanies;
+  List<ProductionCompany>? productionCompanies;
   int? budget;
   int? grossWorldwide;
   List<String>? genres;
@@ -28,124 +37,225 @@ class MostPopularModel {
   int? numVotes;
   int? metascore;
 
-  MostPopularModel({this.id, this.url, this.primaryTitle, this.originalTitle, this.type, this.description, this.primaryImage, this.thumbnails, this.trailer, this.contentRating, this.startYear, this.endYear, this.releaseDate, this.interests, this.countriesOfOrigin, this.externalLinks, this.spokenLanguages, this.filmingLocations, this.productionCompanies, this.budget, this.grossWorldwide, this.genres, this.isAdult, this.runtimeMinutes, this.averageRating, this.numVotes, this.metascore});
+  MostPopularMovieList({
+    this.id,
+    this.url,
+    this.primaryTitle,
+    this.originalTitle,
+    this.type,
+    this.description,
+    this.primaryImage,
+    this.thumbnails,
+    this.trailer,
+    this.contentRating,
+    this.startYear,
+    this.endYear,
+    this.releaseDate,
+    this.interests,
+    this.countriesOfOrigin,
+    this.externalLinks,
+    this.spokenLanguages,
+    this.filmingLocations,
+    this.productionCompanies,
+    this.budget,
+    this.grossWorldwide,
+    this.genres,
+    this.isAdult,
+    this.runtimeMinutes,
+    this.averageRating,
+    this.numVotes,
+    this.metascore,
+  });
 
-  MostPopularModel.fromJson(Map<String, dynamic> json) {
-    id = json["id"];
-    url = json["url"];
-    primaryTitle = json["primaryTitle"];
-    originalTitle = json["originalTitle"];
-    type = json["type"];
-    description = json["description"];
-    primaryImage = json["primaryImage"];
-    thumbnails = json["thumbnails"] == null ? null : (json["thumbnails"] as List).map((e) => Thumbnails.fromJson(e)).toList();
-    trailer = json["trailer"];
-    contentRating = json["contentRating"];
-    startYear = json["startYear"];
-    endYear = json["endYear"];
-    releaseDate = json["releaseDate"];
-    interests = json["interests"] == null ? null : List<String>.from(json["interests"]);
-    countriesOfOrigin = json["countriesOfOrigin"] ?? [];
-    externalLinks = json["externalLinks"] ?? [];
-    spokenLanguages = json["spokenLanguages"] == null ? null : List<String>.from(json["spokenLanguages"]);
-    filmingLocations = json["filmingLocations"] == null ? null : List<String>.from(json["filmingLocations"]);
-    productionCompanies = json["productionCompanies"] == null ? null : (json["productionCompanies"] as List).map((e) => ProductionCompanies.fromJson(e)).toList();
-    budget = json["budget"];
-    grossWorldwide = json["grossWorldwide"];
-    genres = json["genres"] == null ? null : List<String>.from(json["genres"]);
-    isAdult = json["isAdult"];
-    runtimeMinutes = json["runtimeMinutes"];
-    averageRating = json["averageRating"];
-    numVotes = json["numVotes"];
-    metascore = json["metascore"];
+  factory MostPopularMovieList.fromJson(Map<String, dynamic> json) {
+    return MostPopularMovieList(
+      id: json["id"] as String?,
+      url: json["url"] as String?,
+      primaryTitle: json["primaryTitle"] as String?,
+      originalTitle: json["originalTitle"] as String?,
+
+      type: json["type"] != null ? typeValues.map[json["type"]] : null,
+
+      description: json["description"] as String?,
+      primaryImage: json["primaryImage"] as String?,
+
+      thumbnails:
+          (json["thumbnails"] as List?)
+              ?.map((e) => Thumbnail.fromJson(e))
+              .toList() ??
+          [],
+
+      trailer: json["trailer"] as String?,
+
+      contentRating: json["contentRating"] != null
+          ? contentRatingValues.map[json["contentRating"]]
+          : null,
+
+      startYear: json["startYear"] as int?,
+      endYear: json["endYear"],
+
+      releaseDate: json["releaseDate"] != null
+          ? DateTime.tryParse(json["releaseDate"])
+          : null,
+
+      interests:
+          (json["interests"] as List?)?.map((e) => e.toString()).toList() ?? [],
+
+      countriesOfOrigin:
+          (json["countriesOfOrigin"] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+
+      externalLinks:
+          (json["externalLinks"] as List?)?.map((e) => e.toString()).toList() ??
+          [],
+
+      spokenLanguages:
+          (json["spokenLanguages"] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+
+      filmingLocations:
+          (json["filmingLocations"] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+
+      productionCompanies:
+          (json["productionCompanies"] as List?)
+              ?.map((e) => ProductionCompany.fromJson(e))
+              .toList() ??
+          [],
+
+      budget: json["budget"] as int?,
+      grossWorldwide: json["grossWorldwide"] as int?,
+
+      genres:
+          (json["genres"] as List?)?.map((e) => e.toString()).toList() ?? [],
+
+      isAdult: json["isAdult"] as bool?,
+      runtimeMinutes: json["runtimeMinutes"] as int?,
+
+      averageRating: json["averageRating"] != null
+          ? (json["averageRating"] as num).toDouble()
+          : null,
+
+      numVotes: json["numVotes"] as int?,
+      metascore: json["metascore"] as int?,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["id"] = id;
-    _data["url"] = url;
-    _data["primaryTitle"] = primaryTitle;
-    _data["originalTitle"] = originalTitle;
-    _data["type"] = type;
-    _data["description"] = description;
-    _data["primaryImage"] = primaryImage;
-    if(thumbnails != null) {
-      _data["thumbnails"] = thumbnails?.map((e) => e.toJson()).toList();
-    }
-    _data["trailer"] = trailer;
-    _data["contentRating"] = contentRating;
-    _data["startYear"] = startYear;
-    _data["endYear"] = endYear;
-    _data["releaseDate"] = releaseDate;
-    if(interests != null) {
-      _data["interests"] = interests;
-    }
-    if(countriesOfOrigin != null) {
-      _data["countriesOfOrigin"] = countriesOfOrigin;
-    }
-    if(externalLinks != null) {
-      _data["externalLinks"] = externalLinks;
-    }
-    if(spokenLanguages != null) {
-      _data["spokenLanguages"] = spokenLanguages;
-    }
-    if(filmingLocations != null) {
-      _data["filmingLocations"] = filmingLocations;
-    }
-    if(productionCompanies != null) {
-      _data["productionCompanies"] = productionCompanies?.map((e) => e.toJson()).toList();
-    }
-    _data["budget"] = budget;
-    _data["grossWorldwide"] = grossWorldwide;
-    if(genres != null) {
-      _data["genres"] = genres;
-    }
-    _data["isAdult"] = isAdult;
-    _data["runtimeMinutes"] = runtimeMinutes;
-    _data["averageRating"] = averageRating;
-    _data["numVotes"] = numVotes;
-    _data["metascore"] = metascore;
-    return _data;
+    return {
+      "id": id,
+      "url": url,
+      "primaryTitle": primaryTitle,
+      "originalTitle": originalTitle,
+      "type": type != null ? typeValues.reverse[type] : null,
+      "description": description,
+      "primaryImage": primaryImage,
+
+      "thumbnails": thumbnails?.map((e) => e.toJson()).toList() ?? [],
+
+      "trailer": trailer,
+
+      "contentRating": contentRating != null
+          ? contentRatingValues.reverse[contentRating]
+          : null,
+
+      "startYear": startYear,
+      "endYear": endYear,
+
+      "releaseDate": releaseDate?.toIso8601String(),
+
+      "interests": interests ?? [],
+      "countriesOfOrigin": countriesOfOrigin ?? [],
+      "externalLinks": externalLinks ?? [],
+      "spokenLanguages": spokenLanguages ?? [],
+      "filmingLocations": filmingLocations ?? [],
+
+      "productionCompanies":
+          productionCompanies?.map((e) => e.toJson()).toList() ?? [],
+
+      "budget": budget,
+      "grossWorldwide": grossWorldwide,
+
+      "genres": genres ?? [],
+
+      "isAdult": isAdult,
+      "runtimeMinutes": runtimeMinutes,
+      "averageRating": averageRating,
+      "numVotes": numVotes,
+      "metascore": metascore,
+    };
   }
 }
 
-class ProductionCompanies {
+enum ContentRating { g, notRated, pg, pg13, r, tv14, tvMa, unrated }
+
+final contentRatingValues = EnumValues({
+  "G": ContentRating.g,
+  "Not Rated": ContentRating.notRated,
+  "PG": ContentRating.pg,
+  "PG-13": ContentRating.pg13,
+  "R": ContentRating.r,
+  "TV-14": ContentRating.tv14,
+  "TV-MA": ContentRating.tvMa,
+  "Unrated": ContentRating.unrated,
+});
+
+class ProductionCompany {
   String? id;
   String? name;
 
-  ProductionCompanies({this.id, this.name});
+  ProductionCompany({this.id, this.name});
 
-  ProductionCompanies.fromJson(Map<String, dynamic> json) {
-    id = json["id"];
-    name = json["name"];
+  factory ProductionCompany.fromJson(Map<String, dynamic> json) {
+    return ProductionCompany(
+      id: json["id"] as String?,
+      name: json["name"] as String?,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["id"] = id;
-    _data["name"] = name;
-    return _data;
+    return {"id": id, "name": name};
   }
 }
 
-class Thumbnails {
+class Thumbnail {
   String? url;
   int? width;
   int? height;
 
-  Thumbnails({this.url, this.width, this.height});
+  Thumbnail({this.url, this.width, this.height});
 
-  Thumbnails.fromJson(Map<String, dynamic> json) {
-    url = json["url"];
-    width = json["width"];
-    height = json["height"];
+  factory Thumbnail.fromJson(Map<String, dynamic> json) {
+    return Thumbnail(
+      url: json["url"] as String?,
+      width: json["width"] as int?,
+      height: json["height"] as int?,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["url"] = url;
-    _data["width"] = width;
-    _data["height"] = height;
-    return _data;
+    return {"url": url, "width": width, "height": height};
+  }
+}
+
+enum Type { movie }
+
+final typeValues = EnumValues({"movie": Type.movie});
+
+class EnumValues<T> {
+  final Map<String, T> map;
+  Map<T, String>? _reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    _reverseMap ??= map.map((k, v) => MapEntry(v, k));
+    return _reverseMap!;
   }
 }
